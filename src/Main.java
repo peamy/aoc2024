@@ -1,6 +1,6 @@
 public class Main {
     public static void main(String[] args) {
-        Day2 d = new Day2();
+        Day3 d = new Day3();
 //        d.solvePartOne();
         d.solvePartTwo();
     }
