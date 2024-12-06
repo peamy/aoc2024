@@ -14,24 +14,22 @@ public class Day6 {
     private int x;
     private int y;
     private String guard = "^";
-    private String possibleGuards = "<^>v";
     private int loops;
     public void solvePartOne() {
         map = Commons.readFileAsMap("day6ex.txt");
         prepareData();
         while(guardStep()){
-//            Commons.printMap(map);
+            printTileMap();
         }
-//        Commons.printMap(map);
+        printTileMap();
         System.out.println(part1result());
     }
 
     private boolean guardStep() {
-        drawMovement();
         if(!markTileMap()){
             loops++;
             return false;
-        };
+        }
 
         // check if next position is out of bounds
         int nextx = x + dirx;
@@ -40,7 +38,7 @@ public class Day6 {
             return false;
         }
         // check if he runs into anything
-        else if("#O".contains(map[nexty][nextx])){
+        else if(tileMap[nexty][nextx].IsWall){
             changeDirection();
         }
         // move :)
@@ -50,39 +48,16 @@ public class Day6 {
         return true;
     }
 
-    private void drawMovement(){
-        if(map[y][x].equals("+")){
-            return;
-        }
-
-        if(dirx != 0){
-            if(map[y][x].equals("|")){
-                map[y][x] = "+";
-            }
-            else {
-                map[y][x] = "-";
-            }
-        }
-        else {
-            if(map[y][x].equals("-")){
-                map[y][x] = "+";
-            }
-            else {
-                map[y][x] = "|";
-            }
-        }
-    }
-
     private boolean markTileMap(){
         if(diry != 0){
             if(diry == 1){
                 if(tileMap[y][x].Up){
-                    return false;
+                    return false; // LOOP
                 }
                 tileMap[y][x].Up = true;
             } else {
                 if(tileMap[y][x].Down){
-                    return false;
+                    return false; // LOOP
                 }
                 tileMap[y][x].Down = true;
             }
@@ -90,17 +65,18 @@ public class Day6 {
         else {
             if(dirx == 1){
                 if(tileMap[y][x].Right){
-                    return false;
+                    return false; // LOOP
                 }
                 tileMap[y][x].Right = true;
             }
             else {
                 if(tileMap[y][x].Left){
-                    return false;
+                    return false; // LOOP
                 }
                 tileMap[y][x].Left = true;
             }
         }
+        tileMap[y][x].PlaceGuard(guard);
         return true;
     }
 
@@ -109,7 +85,13 @@ public class Day6 {
 
         for(int i = 0; i < map.length; i++){
             for(int j = 0; j < map[i].length; j++){
-                tileMap[i][j] = new Tile();
+                Tile tile = new Tile();
+                tileMap[i][j] = tile;
+                if(map[i][j].equals("#")){
+                    tile.IsWall=true;
+                    tile.icon = "#";
+                }
+                String possibleGuards = "<^>v";
                 if(possibleGuards.contains(map[i][j])){
                     x = j;
                     y = i;
@@ -152,27 +134,21 @@ public class Day6 {
         int total = 0;
         for(int i = 0; i < map.length; i++){
             for(int j = 0; j < map[i].length; j++){
-                if("+-|".contains(map[i][j])){
-                    total++;
-                }
+                total+= tileMap[i][j].Value();
             }
         }
         return  total;
     }
 
     public void solvePartTwo() {
-        map = Commons.readFileAsMap("day6.txt");
-
-        // because map variable will change during the session
-        int mapx = map[0].length;
-        int mapy = map.length;
+        map = Commons.readFileAsMap("day6ex.txt");
         loops = 0;
-        for(int i = 0; i < mapy; i++) {
-            for (int j = 0; j < mapx; j++) {
-                map = Commons.readFileAsMap("day6.txt");
+        for(int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map[0].length; j++) {
                 prepareData();
                 if(map[i][j].equals(".")){
-                    map[i][j]="O";
+                    tileMap[i][j].IsWall = true;
+                    tileMap[i][j].icon = "O";
                     while (guardStep());
                 }
             }
@@ -182,12 +158,12 @@ public class Day6 {
 
     // wip
     private void printTileMap(){
-        String result = "\n\n\n";
-        for(int i = 0; i < tileMap.length; i++){
-            for(int j = 0; j < tileMap[i].length; j++){
-                result+=tileMap[i][j].toString();
+        StringBuilder result = new StringBuilder("\n\n\n");
+        for (Tile[] tiles : tileMap) {
+            for (Tile tile : tiles) {
+                result.append(tile.toString());
             }
-            result+="\n";
+            result.append("\n");
         }
         System.out.println(result);
     }
