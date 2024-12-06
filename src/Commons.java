@@ -39,7 +39,6 @@ public class Commons {
             result+="\n";
         }
         System.out.println(result);
-
     }
 
 }

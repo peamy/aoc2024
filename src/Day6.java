@@ -1,56 +1,122 @@
-import java.util.Arrays;
+import Objects.Tile;
 
 public class Day6 {
 
+    // visual map with strings
     private String[][] map;
-
-    private int dirx = 0;
-    private int diry = -1;
+    // map to keep track of which directions have been walked on each point
+    // I added the tileMap later for part 2, because i needed to keep track of more than just horizontal and vertical movement
+    private Tile[][] tileMap;
+    // current direction
+    private int dirx;
+    private int diry;
+    // current location
     private int x;
     private int y;
     private String guard = "^";
     private String possibleGuards = "<^>v";
+    private int loops;
     public void solvePartOne() {
-        map = Commons.readFileAsMap("day6.txt");
-        findGuard();
+        map = Commons.readFileAsMap("day6ex.txt");
+        prepareData();
         while(guardStep()){
 //            Commons.printMap(map);
         }
-        Commons.printMap(map);
+//        Commons.printMap(map);
         System.out.println(part1result());
     }
 
     private boolean guardStep() {
+        drawMovement();
+        if(!markTileMap()){
+            loops++;
+            return false;
+        };
 
         // check if next position is out of bounds
         int nextx = x + dirx;
         int nexty = y + diry;
         if(nextx < 0 || nextx >= map[0].length || nexty < 0 || nexty >= map.length){
-            map[y][x] = "X";
             return false;
         }
         // check if he runs into anything
-        else if(map[nexty][nextx].equals("#")){
+        else if("#O".contains(map[nexty][nextx])){
             changeDirection();
-            map[y][x] = guard;
         }
         // move :)
         else {
-            map[y][x] = "X";
-            map[nexty][nextx] = guard;
             x = nextx; y = nexty;
         }
         return true;
     }
 
-    private void findGuard(){
+    private void drawMovement(){
+        if(map[y][x].equals("+")){
+            return;
+        }
+
+        if(dirx != 0){
+            if(map[y][x].equals("|")){
+                map[y][x] = "+";
+            }
+            else {
+                map[y][x] = "-";
+            }
+        }
+        else {
+            if(map[y][x].equals("-")){
+                map[y][x] = "+";
+            }
+            else {
+                map[y][x] = "|";
+            }
+        }
+    }
+
+    private boolean markTileMap(){
+        if(diry != 0){
+            if(diry == 1){
+                if(tileMap[y][x].Up){
+                    return false;
+                }
+                tileMap[y][x].Up = true;
+            } else {
+                if(tileMap[y][x].Down){
+                    return false;
+                }
+                tileMap[y][x].Down = true;
+            }
+        }
+        else {
+            if(dirx == 1){
+                if(tileMap[y][x].Right){
+                    return false;
+                }
+                tileMap[y][x].Right = true;
+            }
+            else {
+                if(tileMap[y][x].Left){
+                    return false;
+                }
+                tileMap[y][x].Left = true;
+            }
+        }
+        return true;
+    }
+
+    private void prepareData(){
+        tileMap = new Tile[map.length][map[0].length];
+
         for(int i = 0; i < map.length; i++){
             for(int j = 0; j < map[i].length; j++){
+                tileMap[i][j] = new Tile();
                 if(possibleGuards.contains(map[i][j])){
                     x = j;
                     y = i;
+                    //assuming its always up :)
+                    dirx = 0;
+                    diry = -1;
                     guard = map[i][j];
-                    return;
                 }
             }
         }
@@ -86,7 +152,7 @@ public class Day6 {
         int total = 0;
         for(int i = 0; i < map.length; i++){
             for(int j = 0; j < map[i].length; j++){
-                if(map[i][j].equals("X")){
+                if("+-|".contains(map[i][j])){
                     total++;
                 }
             }
@@ -95,5 +161,34 @@ public class Day6 {
     }
 
     public void solvePartTwo() {
+        map = Commons.readFileAsMap("day6.txt");
+
+        // because map variable will change during the session
+        int mapx = map[0].length;
+        int mapy = map.length;
+        loops = 0;
+        for(int i = 0; i < mapy; i++) {
+            for (int j = 0; j < mapx; j++) {
+                map = Commons.readFileAsMap("day6.txt");
+                prepareData();
+                if(map[i][j].equals(".")){
+                    map[i][j]="O";
+                    while (guardStep());
+                }
+            }
+        }
+        System.out.println("Loops: " + loops);
+    }
+
+    // wip
+    private void printTileMap(){
+        String result = "\n\n\n";
+        for(int i = 0; i < tileMap.length; i++){
+            for(int j = 0; j < tileMap[i].length; j++){
+                result+=tileMap[i][j].toString();
+            }
+            result+="\n";
+        }
+        System.out.println(result);
     }
 }
