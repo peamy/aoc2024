@@ -20,38 +20,22 @@ public class Day8 {
                 }
             }
         }
-//        printMap(beacons, antidotes, boudnsX, boundsY);
         System.out.println(antidotes.size());
 
-    }
-
-    private void printMap(List<Beacon> beacons, List<Antidote> antidotes, int x, int y){
-        StringBuilder builder = new StringBuilder();
-        for(int i = 0; i < x; i++){
-            for(int j = 0; j < y; j++){
-                int antiCount = countAntidotes(antidotes, i, j);
-                Beacon beacon = getBeacon(beacons, i, j);
-                if(antiCount > 0){
-                    builder.append(antiCount + "");
-                }
-                else if(beacon != null && false){
-                    builder.append(beacon.type);
-                }
-                else {
-                    builder.append(".");
+        //part2
+        antidotes = new ArrayList<>();
+        for(Beacon beacon : beacons){
+            for(Beacon testbeacon: beacons){
+                List<Antidote> newAntidotes = beacon.createAntidotes(testbeacon, boudnsX, boundsY);
+                for(Antidote antidote : newAntidotes){
+                    if(antidotes.stream().filter(a -> a.Overlaps(antidote)).findFirst().orElse(null) == null){
+                        antidotes.add(antidote);
+                    }
                 }
             }
-            builder.append("\n");
         }
-        System.out.println(builder.toString());
-    }
+        System.out.println(antidotes.size());
 
-    private int countAntidotes(List<Antidote> antidotes, int i, int j){
-        return (int) antidotes.stream().filter(a -> a.X()==i && a.Y()==j).count();
-    }
-
-    private Beacon getBeacon(List<Beacon> beacons, int x, int y){
-       return beacons.stream().filter(b -> b.x == x && b.y == y).findFirst().orElse(null);
     }
 
     private List<Beacon> createBeacons(List<String> input){

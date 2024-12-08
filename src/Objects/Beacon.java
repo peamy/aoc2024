@@ -1,5 +1,8 @@
 package Objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Beacon {
     public Beacon(char point, int i, int j) {
         this.type = point;
@@ -28,5 +31,33 @@ public class Beacon {
         }
 
         return new Antidote(antidoteX, antidoteY);
+    }
+
+    public List<Antidote> createAntidotes(Beacon beacon, int boundsX, int boundsY){
+        List<Antidote> antidotes = new ArrayList<>();
+
+        if(beacon.type != this.type || beacon.equals(this)){
+            return antidotes;
+        }
+
+
+        int dirX = this.x - beacon.x;
+        int dirY = this.y - beacon.y;
+
+        int newAntidoteX = this.x;
+        int newAntidoteY = this.y;
+
+
+        while(newAntidoteX >= 0 && newAntidoteX < boundsX && newAntidoteY >= 0 && newAntidoteY < boundsY){
+            antidotes.add(new Antidote(newAntidoteX, newAntidoteY));
+            newAntidoteX += dirX;
+            newAntidoteY += dirY;
+        }
+
+//        System.out.println(type + " " + x + " " + y);
+//        System.out.println(beacon.type + " " + beacon.x + " " + beacon.y);
+//        System.out.println("@ " + antidoteX + " " + antidoteY);
+
+        return antidotes;
     }
 }
