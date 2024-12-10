@@ -16,16 +16,17 @@ public class Day9 {
 
         while (isInComplete(blocks)) {
             blocks = moveABlock(blocks);
+            printMemory(blocks);
         }
 
-        printMemory(blocks);
         System.out.println(calculateScore(blocks));
     }
 
     private void part2() {
-        String input = Commons.readFileLines("d9").get(0);
+        String input = Commons.readFileLines("d9ex").get(0);
         List<Block> blocks = createBlockList(input);
         while (moveABlock(blocks)) {
+            printMemory(blocks);
         }
         System.out.println(calculateScore(blocks));
     }
