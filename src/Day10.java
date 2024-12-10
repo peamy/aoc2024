@@ -1,11 +1,14 @@
 public class Day10 {
 
+    boolean part2 = false;
     public Day10(){
         int[][] map = Commons.readFileAsIntMap("d10");
-        System.out.println(getPart1Score(map));
+        System.out.println(getScore(map));
+        part2 = true;
+        System.out.println(getScore(map));
     }
 
-    private int getPart1Score(int[][] map){
+    private int getScore(int[][] map){
         int total = 0;
 
         for(int y = 0; y < map.length; y++){
@@ -31,15 +34,13 @@ public class Day10 {
         try {
             int currentvalue = map[y][x];
 
-            if(checkMap[y][x] == 1)
+            if(checkMap[y][x] == 1 && !part2)
                 return 0;
-            if(currentvalue != prevvalue + 1){
+            if(currentvalue != prevvalue + 1)
                 return 0;
-            }
 
             int total = 0;
             checkMap[y][x] = 1;
-            Commons.printMap(checkMap);
 
             total += recursiveSearch(map,y, x + 1, currentvalue);
             total += recursiveSearch(map,y, x - 1, currentvalue);
