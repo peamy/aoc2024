@@ -15,20 +15,14 @@ public class Day10 {
             for(int x = 0; x < map[y].length; x++){
                 if(map[y][x] == 0){
                     checkMap = new int[map.length][map[0].length];
-                    total+= getScoreForZero(map, y, x);
+                    total+=  recursiveSearch(map, y, x, -1);
                 }
             }
         }
-
         return total;
     }
 
     int[][] checkMap;
-    private int getScoreForZero(int[][] map, int y, int x){
-        int total = 0;
-        total += recursiveSearch(map, y, x, -1);
-        return total;
-    }
 
     private int recursiveSearch(int[][] map, int y, int x, int prevvalue){
         try {
