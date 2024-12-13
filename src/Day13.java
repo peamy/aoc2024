@@ -5,26 +5,34 @@ import java.util.List;
 
 public class Day13 {
     public Day13(){
-        List<Clawmachine> clawmachines = createClawMachines();
-        int totalPresses = 0;
-        int winners = 0;
+        part2();
+    }
+
+    private void part1() {
+        List<Clawmachine> clawmachines = createClawMachines(false);
+        long totalPresses = 0;
         for(Clawmachine clawmachine: clawmachines){
-            int result = bruteForceClawMachine(clawmachine);
-            if(result > 0){
-                totalPresses+=result;
-                winners++;
-            }
+            totalPresses+=bruteForceClawMachine(clawmachine);
         }
         System.out.println(totalPresses);
     }
 
-    private List<Clawmachine> createClawMachines(){
+    private void part2(){
+        List<Clawmachine> clawmachines = createClawMachines(true);
+        long totalPresses = 0;
+        for(Clawmachine clawmachine: clawmachines){
+            totalPresses+=calculateClawMachine(clawmachine);
+        }
+        System.out.println(totalPresses);
+    }
+
+    private List<Clawmachine> createClawMachines(boolean isPart2){
         List<Clawmachine> machines = new ArrayList<>();
         List<String> input = Commons.readFileLines("d13");
         List<String> tmpList = new ArrayList<>();
         for(String s : input){
             if(s.isEmpty() && tmpList.size() == 3){
-                machines.add(new Clawmachine(tmpList));
+                machines.add(new Clawmachine(tmpList,isPart2));
                 tmpList = new ArrayList<>();
             }
             else {
@@ -32,14 +40,14 @@ public class Day13 {
             }
         }
         if(tmpList.size() == 3){
-            machines.add(new Clawmachine(tmpList));
+            machines.add(new Clawmachine(tmpList,isPart2));
         }
 
         return machines;
     }
 
-    private int bruteForceClawMachine(Clawmachine clawmachine){
-        int lowest = 0;
+    private long bruteForceClawMachine(Clawmachine clawmachine){
+        long lowest = 0;
         for(int a = 1; a <= 100; a++){
             for(int b = 1; b <= 100; b++){
                 clawmachine.pressA(a);
@@ -55,4 +63,21 @@ public class Day13 {
         }
         return lowest;
     }
+
+    private long calculateClawMachine(Clawmachine clawmachine){
+
+
+        long b = clawmachine.calculateB();
+        long a = (clawmachine.prizeX - (clawmachine.buttonBX * b)) / clawmachine.buttonAX;
+
+        clawmachine.pressA(a);
+        clawmachine.pressB(b);
+        if(clawmachine.won()){
+            return 3*a + b;
+        }
+
+        return 0L;
+    }
+
+
 }

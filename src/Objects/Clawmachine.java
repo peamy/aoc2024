@@ -4,33 +4,26 @@ import java.util.List;
 
 public class Clawmachine {
 
-    public Clawmachine(List<String> input){
+    public Clawmachine(List<String> input, boolean isPart2){
         buttonAX = Integer.parseInt(input.get(0).split("\\+")[1].split(",")[0]);
         buttonAY = Integer.parseInt(input.get(0).split("\\+")[2]);
         buttonBX = Integer.parseInt(input.get(1).split("\\+")[1].split(",")[0]);
         buttonBY = Integer.parseInt(input.get(1).split("\\+")[2]);
-        prizeX = Integer.parseInt(input.get(2).split("=")[1].split(",")[0]);
-        prizeY = Integer.parseInt(input.get(2).split("=")[2]);
+        long addition = isPart2 ? 10000000000000L : 0L;
+        prizeX = Long.parseLong(input.get(2).split("=")[1].split(",")[0]) + addition;
+        prizeY = Long.parseLong(input.get(2).split("=")[2]) + addition;
     }
 
-    public Clawmachine(int prizex, int prizey, int ax, int ay, int bx, int by){
-        prizeX = prizex;
-        prizeY = prizey;
-        buttonAX = ax;
-        buttonAY = ay;
-        buttonBX = bx;
-        buttonBY = by;
-    }
-    public final int prizeX;
-    public final int prizeY;
+    public final long prizeX;
+    public final long prizeY;
 
     public final int buttonAX;
     public final int buttonAY;
     public final int buttonBX;
     public final int buttonBY;
 
-    private int currentX;
-    private int currentY;
+    private long currentX;
+    private long currentY;
     public int timesAWasPressed;
     public int timesBWasPressed;
 
@@ -41,13 +34,13 @@ public class Clawmachine {
         timesAWasPressed = 0;
     }
 
-    public void pressA(int amount){
+    public void pressA(long amount){
         currentY += amount*buttonAY;
         currentX += amount*buttonAX;
         timesAWasPressed++;
     }
 
-    public void pressB(int amount){
+    public void pressB(long amount){
         currentY += amount*buttonBY;
         currentX += amount*buttonBX;
         timesBWasPressed++;
@@ -55,6 +48,10 @@ public class Clawmachine {
 
     public boolean won(){
         return currentX == prizeX && currentY == prizeY;
+    }
+
+    public long calculateB(){
+        return ((buttonAY*prizeX) - (buttonAX*prizeY)) / (((long) buttonAY *buttonBX)-((long) buttonAX *buttonBY));
     }
 
 }
