@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Day14 {
     public Day14(){
-        part1();
+        part2();
     }
 
     void part1(){
@@ -14,6 +14,20 @@ public class Day14 {
         robots.forEach(r -> r.moveSeconds(100));
         printRobotLocations(robots);
         System.out.println(getSafetyFactor(robots));
+    }
+
+    void part2(){
+        List<Robot> robots = getRobots(false);
+        int solution = 0;
+        for(int i = 1; i < 100000; i++) {
+            robots.forEach(r -> r.moveSeconds(1));
+            if(couldBeAChristmasTree(robots)){
+                System.out.println(i);
+                solution = i;
+            }
+        }
+        printRobotLocations(robots);
+        System.out.println(solution);
     }
 
     private List<Robot> getRobots(boolean example){
@@ -58,6 +72,22 @@ public class Day14 {
         }
 
         return lt * lb * rt * rb;
+    }
+
+    long cbtree = Long.MAX_VALUE;
+    private boolean couldBeAChristmasTree(List<Robot> robs){
+//        int bx = robs.get(0).bx;
+//        int by = robs.get(0).by;
+//        int left = (bx -1) / 2;
+//        int up = (by-1)/2;
+//        long amountOfRobotsInMiddle = robs.stream().filter(r -> r.x == left || r.y == up).count();
+        long score = getSafetyFactor(robs);
+        if(score < cbtree){
+            cbtree = score;
+            return true;
+        }
+
+        return false;
     }
 
     private void printRobotLocations(List<Robot> robots){
