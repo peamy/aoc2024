@@ -64,4 +64,15 @@ public class Commons {
         System.out.println(result);
     }
 
+    public static void printMapHideZero(int[][] map){
+        String result = "\n\n\n";
+        for(int i = 0; i < map.length; i++){
+            for(int j = 0; j < map[i].length; j++){
+                result+= map[i][j] == 0 ? "." : map[i][j];
+            }
+            result+="\n";
+        }
+        System.out.println(result);
+    }
+
 }
